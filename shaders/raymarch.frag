@@ -11,8 +11,6 @@ uniform vec4 colDiffuse;
 // Output fragment color
 out vec4 finalColor;
 
-// NOTE: Add here your custom variables
-
 struct Ray { vec3 orig, dir; };
 struct Sphere { vec3 center; float radius; };
 struct Box { vec3 center, size; };
@@ -30,7 +28,6 @@ const float EPSILON = 0.001;
 const vec2 viewportSize = vec2(800,450);
 const float aspectRatio = viewportSize.x/viewportSize.y;
 
-
 const float zNear = 10.0;
 const float zFar = 120.0;
 vec2 viewportWorld = vec2(zNear * tan(FOV/2.0), zNear * tan(FOV/2.0)/aspectRatio);
@@ -42,13 +39,11 @@ const Sphere sphere[2] = Sphere[](
 );
 const int N_SPHERES = sphere.length();
 
-
 const Box box[2] = Box[](
   Box(vec3(0,  0, 20), vec3(2)),
   Box(vec3(10,10, 40), vec3(2))
 );
 const int N_BOXES = box.length();
-
 
 // Distance fields
 float sdSphere(vec3 p, float s)
@@ -72,7 +67,7 @@ vec3 boxNormal(vec3 p, Box b)
     return normalize(nor);
 }
 
-//Ray marching
+// Ray marching
 Ray rayFromPixel(vec2 p)
 {
   const vec4 cameraV  = vec4(0,0,0,1);
@@ -98,7 +93,7 @@ Hit rayMarch(Ray ray) {
     vec3 p = ray.orig + ray.dir * dist;
     float minD = zFar*2;
 
-    for (int j = 0; j < N_SPHERES; ++j) {
+    for (int j = 0; j < N_SPHERES; ++j) { // Raymarch spheres
       Sphere s = sphere[j];
       vec3 relativeP = p-s.center;
       float d = sdSphere(relativeP, s.radius);
@@ -106,7 +101,7 @@ Hit rayMarch(Ray ray) {
       minD = min(minD,d);
     }
 
-    for (int j = 0; j < N_BOXES; ++j) {
+    for (int j = 0; j < N_BOXES; ++j) { // Raymarch boxes
       Box b = box[j];
       vec3 relativeP = p-b.center;
 
